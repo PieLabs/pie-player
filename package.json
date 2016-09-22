@@ -1,0 +1,22 @@
+{
+  "name": "pie-player",
+  "version": "1.0.0",
+  "description": "a pie-player custom element",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/PieLabs/pie-player.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PieLabs/pie-player/issues"
+  },
+  "homepage": "https://github.com/PieLabs/pie-player#readme",
+  "dependencies": {
+    "lodash": "~4.16.1"
+  }
+}
