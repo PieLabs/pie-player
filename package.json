@@ -4,7 +4,7 @@
   "description": "a pie-player custom element",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "webpack && wct"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,12 @@
   "homepage": "https://github.com/PieLabs/pie-player#readme",
   "dependencies": {
     "lodash": "~4.16.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.14.0",
+    "web-component-tester": "^4.3.4",
+    "webpack": "^1.13.2"
   }
 }
