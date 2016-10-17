@@ -1,10 +1,27 @@
 <!doctype html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <script src="../node_modules/web-component-tester/browser.js"></script>
   <script src="bundle.js"></script>
+  <script type="text/javascript">
+
+
+      var MyCompPrototype = Object.create(HTMLElement.prototype);
+
+      MyCompPrototype.attachedCallback = function() {
+        this.dispatchEvent(new CustomEvent('pie.register', {bubbles: true}));
+      };
+
+      document.registerElement('my-comp', {prototype: MyCompPrototype});
+
+      document.addEventListener('pie.register', function(event){
+        console.log('got a pie.register', event)
+      })
+  </script>
 </head>
+
 <body>
   <pie-player>
     <my-comp data-id="1"></my-comp>
@@ -15,8 +32,7 @@
       var el, mockController;
       beforeEach(function(done){
 
-        this.timeout(30000);
-
+        var calledDone=false;
         mockController = {
           model: sinon.spy(function(){
             console.log('arguments: ' + JSON.stringify(arguments));
@@ -26,9 +42,10 @@
 
         el = document.querySelector('pie-player');
         
-        el.addEventListener('pie', function(event){
+        el.addEventListener('pie.model-updated', function(event){
           console.log('model has been updated');
-          if(event.detail.type === 'modelUpdated'){
+          if(!calledDone){
+            calledDone = true;
             done();
           }
         });
@@ -39,13 +56,27 @@
       });
 
       it('isnt null', function() {
+        console.log("???");
         expect(el).not.to.be.null;
       });
 
+      it('has 1 _pie at _pie[1]', function(){
+        expect(el._pies['1']).not.to.be.null;
+      });
+
+      it('has _pie[1].model ', function(){
+        expect(el._pies['1'].model).to.eql({id: '1', value: 'model-result'});
+      });
+      
+      it('has _pie[1].session ', function(){
+        expect(el._pies['1'].session).to.eql({id: '1'});
+      });
+
       it('calls controller.model', function(){
-        sinon.assert.calledWith(mockController.model, ['1'], [{id: '1'}], {mode: 'gather'});
+        sinon.assert.calledWith(mockController.model, [{id: '1'}], {mode: 'gather'});
       });
     });
   </script>
 </body>
+
 </html>
