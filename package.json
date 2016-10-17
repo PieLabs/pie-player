@@ -1,6 +1,6 @@
 {
   "name": "pie-player",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "a pie-player custom element",
   "main": "lib/index.js",
   "scripts": {
