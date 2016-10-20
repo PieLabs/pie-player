@@ -1,2 +1,2 @@
 import PiePlayer from '../lib/index';
-document.registerElement('pie-player', PiePlayer);
+customElements.define('pie-player', PiePlayer);

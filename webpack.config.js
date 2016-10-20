@@ -9,21 +9,10 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /.js?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/,
-        query: {
-          presets: ['es2015']
-        }
-      },
-      {
-         test: /\.less$/,
-         loader: "style!css!less"
+        test: /\.less$/,
+        loader: "style!css!less"
       }
     ]
-  },
-  resolve: {
-    extensions: ['', '.js', '.jsx']
   }
 };
 

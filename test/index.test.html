@@ -7,18 +7,19 @@
   <script src="bundle.js"></script>
   <script type="text/javascript">
 
+      class MyComp extends HTMLElement {
 
-      var MyCompPrototype = Object.create(HTMLElement.prototype);
+        connectedCallback() {
+          this.dispatchEvent(new CustomEvent('pie.register', {bubbles: true}));
+        }
+      }
 
-      MyCompPrototype.attachedCallback = function() {
-        this.dispatchEvent(new CustomEvent('pie.register', {bubbles: true}));
-      };
-
-      document.registerElement('my-comp', {prototype: MyCompPrototype});
+      customElements.define('my-comp', MyComp);
 
       document.addEventListener('pie.register', function(event){
         console.log('got a pie.register', event)
-      })
+      });
+
   </script>
 </head>
 
