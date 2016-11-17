@@ -17,7 +17,7 @@ Create the element in the markup and wait for the `pie-player-ready` event, in t
 
   document.addEventListener('DOMContentLoaded', function(){
     var player = document.querySelector('pie-player');
-    player.addEventListener('pie-player-ready', function(){
+    player.addEventListener('pie.player-ready', function(){
       player.controllers = //..
       player.session = //..
       player.env = //..
