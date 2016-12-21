@@ -7,18 +7,33 @@
   <script src="bundle.js"></script>
   <script type="text/javascript">
 
-      class MyComp extends HTMLElement {
+    class MyComp extends HTMLElement {
 
-        connectedCallback() {
-          this.dispatchEvent(new CustomEvent('pie.register', {bubbles: true}));
-        }
+      connectedCallback() {
+        this.dispatchEvent(new CustomEvent('pie.register', { bubbles: true }));
+      }
+    }
+
+    customElements.define('my-comp', MyComp);
+
+    class SimpleElement extends HTMLElement {
+
+      constructor() {
+        super();
       }
 
-      customElements.define('my-comp', MyComp);
+      set title(t) {
 
-      document.addEventListener('pie.register', function(event){
-        console.log('got a pie.register', event)
-      });
+        console.log('>>>>> set title: ', t);
+        this.innerHTML = t;
+      }
+    }
+
+    customElements.define('simple-element', SimpleElement);
+
+    document.addEventListener('pie.register', function (event) {
+      console.log('got a pie.register', event)
+    });
 
   </script>
 </head>
@@ -26,55 +41,72 @@
 <body>
   <pie-player>
     <my-comp pie-id="1"></my-comp>
+    <simple-element data-id="2"></simple-element>
   </pie-player>
   <script>
 
-    describe('<pie-player>', function() {
+    describe('<pie-player>', function () {
       var el, mockController;
-      beforeEach(function(done){
+      beforeEach(function (done) {
 
-        var calledDone=false;
+        var calledDone = false;
         mockController = {
-          model: sinon.spy(function(){
+          model: sinon.spy(function () {
             console.log('arguments: ' + JSON.stringify(arguments));
-            return Promise.resolve([{id: '1', value: 'model-result'}]);
+            return Promise.resolve([{ id: '1', value: 'model-result' }]);
           })
-       };
+        };
 
         el = document.querySelector('pie-player');
-        
-        el.addEventListener('pie.model-updated', function(event){
+
+        el.addEventListener('pie.model-updated', function (event) {
           console.log('model has been updated');
-          if(!calledDone){
+          if (!calledDone) {
             calledDone = true;
             done();
           }
         });
 
-        el.env = {mode: 'gather'};
+        el.env = { mode: 'gather' };
         el.session = [];
         el.controller = mockController;
+        el.elementModels = [
+          { element: 'simple-element', title: 'hi', id: '2' }
+        ];
       });
 
-      it('isnt null', function() {
-        console.log("???");
+      it('isnt null', () => {
         expect(el).not.to.be.null;
       });
 
-      it('has 1 _pie at _pie[1]', function(){
+      it('has 1 _pie at _pie[1]', () => {
         expect(el._pies['1']).not.to.be.null;
       });
 
-      it('has _pie[1].model ', function(){
-        expect(el._pies['1'].model).to.eql({id: '1', value: 'model-result'});
-      });
-      
-      it('has _pie[1].session ', function(){
-        expect(el._pies['1'].session).to.eql({id: '1'});
+      it('has _pie[1].model ', () => {
+        expect(el._pies['1'].model).to.eql({ id: '1', value: 'model-result' });
       });
 
-      it('calls controller.model', function(){
-        sinon.assert.calledWith(mockController.model, [{id: '1'}], {mode: 'gather'});
+      it('has _pie[1].session ', () => {
+        expect(el._pies['1'].session).to.eql({ id: '1' });
+      });
+
+      it('calls controller.model', () => {
+        sinon.assert.calledWith(mockController.model, [{ id: '1' }], { mode: 'gather' });
+      });
+
+      it('sets the element env', (done) => {
+        setTimeout(() => {
+          expect(document.querySelector('simple-element').env.mode).to.eql('gather');
+          done();
+        }, 1000);
+      });
+
+      it('sets the element models', (done) => {
+        setTimeout(() => {
+          expect(document.querySelector('simple-element').innerHTML).to.eql('hi');
+          done();
+        }, 1000);
       });
     });
   </script>
