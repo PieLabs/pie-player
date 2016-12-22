@@ -1,9 +1,11 @@
 {
   "name": "pie-player",
-  "version": "2.1.0-prerelease",
+  "version": "2.1.0",
   "description": "a pie-player custom element",
   "main": "lib/index.js",
-  "keywords" : ["pie"],
+  "keywords": [
+    "pie"
+  ],
   "scripts": {
     "test": "webpack && wct"
   },
