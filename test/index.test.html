@@ -76,6 +76,11 @@
       it('calls controller.model', function(){
         sinon.assert.calledWith(mockController.model, [{id: '1'}], {mode: 'gather'});
       });
+      it('changes default colors using colorContrast property', function(){
+        el.env = {mode:'gather', accessibility: {colorContrast: 'white_on_black'}};
+        expect(el.style['--pie-default-color']).not.to.be.null;
+        expect(el.style.getPropertyValue('--pie-default-color')).to.eql('white');
+      });
     });
   </script>
 </body>
