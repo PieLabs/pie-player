@@ -45,6 +45,12 @@
   </pie-player>
   <script>
 
+    const colorMap = {
+      black_on_rose: 'black-on-rose',
+      white_on_black: 'white-on-black',
+      black_on_white: 'default'
+    };
+
     describe('<pie-player>', function () {
       var el, mockController;
       beforeEach(function (done) {
@@ -107,6 +113,29 @@
           expect(document.querySelector('simple-element').innerHTML).to.eql('hi');
           done();
         }, 1000);
+      });
+
+      describe('changing env colorContrast', () => {
+
+        Object.keys(colorMap).forEach((contrast) => {
+          let cssClass = colorMap[contrast];
+
+          describe(`to ${contrast}`, () => {
+
+            it(`sets class on <pie-player> to ${cssClass}`, () => {
+              el.env = {
+                mode: 'gather',
+                accessibility: {
+                  colorContrast: contrast
+                }
+              };
+              expect(el.getAttribute('class')).to.eql(cssClass);
+            });
+
+          });
+          
+        });
+        
       });
     });
   </script>

@@ -1,6 +1,6 @@
 {
   "name": "pie-player",
-  "version": "2.1.0",
+  "version": "2.2.0-prerelease",
   "description": "a pie-player custom element",
   "main": "lib/index.js",
   "keywords": [
@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/PieLabs/pie-player#readme",
   "dependencies": {
-    "lodash": "~4.17.2"
+    "css-loader": "^0.26.1",
+    "lodash": "~4.17.2",
+    "style-loader": "^0.13.1"
   },
   "devDependencies": {
     "babel-core": "^6.14.0",

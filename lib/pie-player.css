@@ -1,0 +1,12 @@
+pie-player {
+  display: block;
+}
+
+pie-player.black-on-rose {
+  background-color: mistyrose;
+}
+
+pie-player.white-on-black {
+  background-color: black;
+  color: white;
+}
