@@ -6,16 +6,26 @@
   <script src="../node_modules/web-component-tester/browser.js"></script>
   <script src="bundle.js"></script>
   <script type="text/javascript">
+    window.readyReceived = false;
 
     class MyComp extends HTMLElement {
 
-      connectedCallback() {
-        this.dispatchEvent(new CustomEvent('pie.register', { bubbles: true }));
+      complete() {
+        this.dispatchEvent(new CustomEvent('session-changed', {
+          bubbles: true,
+          detail: {
+            complete: true
+          }
+        }));
       }
     }
 
     customElements.define('my-comp', MyComp);
 
+
+    /**
+     * A regular custom element that has it's custom properties set.
+     */
     class SimpleElement extends HTMLElement {
 
       constructor() {
@@ -23,18 +33,21 @@
       }
 
       set title(t) {
-
-        console.log('>>>>> set title: ', t);
         this.innerHTML = t;
       }
     }
 
     customElements.define('simple-element', SimpleElement);
 
-    document.addEventListener('pie.register', function (event) {
-      console.log('got a pie.register', event)
+    document.addEventListener('register-pie', function (event) {
+      console.log('got a register-pie event', event)
     });
 
+    document.addEventListener('ready', e => {
+      if (e.target.tagName === 'PIE-PLAYER') {
+        window.readyReceived = true;
+      }
+    });
   </script>
 </head>
 
@@ -43,23 +56,25 @@
     <my-comp pie-id="1"></my-comp>
     <simple-element data-id="2"></simple-element>
   </pie-player>
-  <script>
-
+  <script type="text/javascript">
     describe('<pie-player>', function () {
-      var el, mockController;
+      var el, mockController, readyReceived = false;
       beforeEach(function (done) {
 
         var calledDone = false;
         mockController = {
           model: sinon.spy(function () {
             console.log('arguments: ' + JSON.stringify(arguments));
-            return Promise.resolve([{ id: '1', value: 'model-result' }]);
+            return Promise.resolve([{ id: '1', element: 'my-comp', value: 'model-result' }]);
+          }),
+          outcome: sinon.spy(function () {
+            return Promise.resolve([{ id: '1', element: 'my-comp', score: 0.5 }])
           })
         };
 
         el = document.querySelector('pie-player');
 
-        el.addEventListener('pie.model-updated', function (event) {
+        el.addEventListener('model-updated', function (event) {
           console.log('model has been updated');
           if (!calledDone) {
             calledDone = true;
@@ -67,47 +82,73 @@
           }
         });
 
-        el.env = { mode: 'gather' };
-        el.session = [];
+        el.addEventListener('model-update-error', e => {
+          done(e);
+        });
+
         el.controller = mockController;
-        el.elementModels = [
-          { element: 'simple-element', title: 'hi', id: '2' }
-        ];
+
+        el.env({ mode: 'gather' })
+          .then(() => el.sessions([]))
+          .catch(e => {
+            console.error('error: ', e);
+            done(new Error(e));
+          });
       });
 
-      it('isnt null', () => {
-        expect(el).not.to.be.null;
+      describe('init', () => {
+
+        it('dispatches \'ready\'', () => {
+          expect(window.readyReceived).to.be.true;
+        });
+
+        it('isnt null', () => {
+          expect(el).not.to.be.null;
+        });
+
+        it('has 1 _pie at _pie[1]', () => {
+          expect(el._pies['1']).not.to.be.null;
+        });
+
+        it('has _pie[1].model ', () => {
+          expect(el._pies['1'].model).to.eql({ id: '1', element: 'my-comp', value: 'model-result' });
+        });
+
+        it('has _pie[1].session ', () => {
+          expect(el._pies['1'].session).to.eql({ id: '1' });
+        });
+
+        it('calls controller.model', () => {
+          sinon.assert.calledWith(mockController.model, [{ id: '1' }], { mode: 'gather' });
+        });
       });
 
-      it('has 1 _pie at _pie[1]', () => {
-        expect(el._pies['1']).not.to.be.null;
+      describe('status', () => {
+        it('returns status', () => {
+
+          const comp = el.querySelector('my-comp');
+          comp.complete();
+
+          return el.status()
+            .then((s) => {
+              expect(s).to.eql([{ id: '1', complete: true }]);
+            });
+        });
       });
 
-      it('has _pie[1].model ', () => {
-        expect(el._pies['1'].model).to.eql({ id: '1', value: 'model-result' });
+      describe('outcomes', () => {
+        it('returns the outcomes', () => {
+          return el.outcomes()
+            .then(outcomes => {
+              expect(outcomes).to.eql([{
+                id: '1',
+                element: 'my-comp',
+                score: 0.5
+              }]);
+            });
+        });
       });
 
-      it('has _pie[1].session ', () => {
-        expect(el._pies['1'].session).to.eql({ id: '1' });
-      });
-
-      it('calls controller.model', () => {
-        sinon.assert.calledWith(mockController.model, [{ id: '1' }], { mode: 'gather' });
-      });
-
-      it('sets the element env', (done) => {
-        setTimeout(() => {
-          expect(document.querySelector('simple-element').env.mode).to.eql('gather');
-          done();
-        }, 1000);
-      });
-
-      it('sets the element models', (done) => {
-        setTimeout(() => {
-          expect(document.querySelector('simple-element').innerHTML).to.eql('hi');
-          done();
-        }, 1000);
-      });
     });
   </script>
 </body>
