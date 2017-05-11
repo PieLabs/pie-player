@@ -1,4 +1,5 @@
 module.exports = {
+  devtool: 'eval-source-map',
   entry: {
     demo: './test-build/entry.js'
   },
