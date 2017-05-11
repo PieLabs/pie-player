@@ -126,13 +126,11 @@
         it('calls controller.model', () => {
           sinon.assert.calledWith(mockController.model, [{ id: '1' }], { mode: 'gather' });
         });
-
-
       });
 
 
       describe('elementModels', () => {
-        it('sets the element models', (done) => {
+        it(`sets 'title' to 'hi on <simple-element>`, (done) => {
           setTimeout(() => {
             expect(document.querySelector('simple-element').innerHTML).to.eql('hi');
             done();
