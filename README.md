@@ -42,3 +42,9 @@ We use [webpack](http://webpack.github.io) and [web-component-tester](http://git
 ``` 
 npm test
 ```
+
+# release
+
+```bash
+npm run release
+```
