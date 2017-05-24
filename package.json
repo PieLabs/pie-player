@@ -1,13 +1,14 @@
 {
   "name": "pie-player",
-  "version": "2.1.0",
+  "version": "3.0.0-prerelease",
   "description": "a pie-player custom element",
   "main": "lib/index.js",
   "keywords": [
     "pie"
   ],
   "scripts": {
-    "test": "webpack && wct"
+    "test": "webpack && wct",
+    "release": "./node_modules/.bin/gulp release"
   },
   "repository": {
     "type": "git",

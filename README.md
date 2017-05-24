@@ -35,8 +35,16 @@ This package exports an `es6` module, so you'll have to include it in a build to
 
 # Unit testing
 
+* runs selenium > requires jdk 1.8
+
 We use [webpack](http://webpack.github.io) and [web-component-tester](http://github.com/Polymer/web-component-tester) to test the element. Webpack builds a test bundler and the `wct` runs the test suite.
 
 ``` 
 npm test
+```
+
+# release
+
+```bash
+npm run release
 ```
