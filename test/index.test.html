@@ -123,6 +123,19 @@
         });
       });
 
+      describe('sessions-changed event', () => {
+        it('dispatches a sessions-changed event', (done) => {
+
+          el.addEventListener('sessions-changed', (e) => {
+            expect(e.detail.statuses).to.eql([{ id: '1', complete: true }]);
+            done();
+          });
+
+          const comp = el.querySelector('my-comp');
+          comp.complete();
+        });
+      });
+
       describe('status', () => {
         it('returns status', () => {
 
