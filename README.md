@@ -4,6 +4,9 @@ A custom element for containing a [pie](http;//github.com/PieLabs) player.
 
 ## usage
 
+
+[see here for more information](https://pielabs.github.io/pie-website/docs/using/pie-player-api/).
+
 Create the element in the markup and wait for the `pie-player-ready` event, in the handler set the properties:
 
 * `session` - an array of session data
@@ -17,10 +20,12 @@ Create the element in the markup and wait for the `pie-player-ready` event, in t
 
   document.addEventListener('DOMContentLoaded', function(){
     var player = document.querySelector('pie-player');
-    player.addEventListener('pie.player-ready', function(){
+    player.addEventListener('ready', function(){
       player.controllers = //..
-      player.session = //..
-      player.env = //..
+      player.session(session)
+        .then(() => player.env(env))
+        .then(() => console.log('player is ready'))
+        
     });
   });
 </script>
