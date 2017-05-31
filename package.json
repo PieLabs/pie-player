@@ -1,6 +1,6 @@
 {
   "name": "pie-player",
-  "version": "3.3.0-prerelease",
+  "version": "3.4.0-prerelease",
   "description": "a pie-player custom element",
   "main": "lib/index.js",
   "keywords": [
